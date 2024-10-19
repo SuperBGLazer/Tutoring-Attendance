@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Sessions for Class: {{ class_obj.name }}</h2>
+<a href="{{ url_for('create_session', class_id=class_obj.id) }}" class="btn btn-primary mb-3">Create Session</a>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Date and Time</th>
+            <th>Description</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for session in sessions %}
+        <tr>
+            <td>{{ session.date_time.strftime('%Y-%m-%d %H:%M') }}</td>
+            <td>{{ session.description }}</td>
+            <td>
+                <a href="{{ url_for('view_session', session_id=session.id) }}" class="btn btn-secondary btn-sm">View</a>
+                <a href="{{ url_for('mark_attendance', session_id=session.id) }}" class="btn btn-primary btn-sm">Edit Attendance</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

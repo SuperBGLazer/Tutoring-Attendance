@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Edit Student</h2>
+<form action="" method="post">
+    <div class="form-group">
+        <label for="first_name">First Name:</label>
+        <input type="text" name="first_name" class="form-control" value="{{ student.first_name }}" required>
+    </div>
+    <div class="form-group">
+        <label for="last_name">Last Name:</label>
+        <input type="text" name="last_name" class="form-control" value="{{ student.last_name }}" required>
+    </div>
+    <div class="form-group">
+        <label for="email">Email:</label>
+        <input type="email" name="email" class="form-control" value="{{ student.email }}" required>
+    </div>
+    <div class="form-group">
+        <label for="classes">Assign to Classes:</label>
+        {% for class_obj in classes %}
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="classes" value="{{ class_obj.id }}"
+            {% if class_obj in student.classes %} checked {% endif %}>
+            <label class="form-check-label">{{ class_obj.name }}</label>
+        </div>
+        {% endfor %}
+    </div>
+    <button type="submit" class="btn btn-primary">Update Student</button>
+</form>
+{% endblock %}

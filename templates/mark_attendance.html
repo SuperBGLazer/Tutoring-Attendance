@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Mark Attendance for Session on {{ session.date_time.strftime('%Y-%m-%d %H:%M') }} - Class: {{ session.class_.name }}</h2>
+<form action="" method="post">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Present</th>
+                <th>Last Name</th>
+                <th>First Name</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for student in students %}
+            <tr>
+                <td>
+                    <input type="checkbox" name="attendance" value="{{ attendance_records[student.id].id }}"
+                    {% if attendance_records[student.id].attended %} checked {% endif %}>
+                </td>
+                <td>{{ student.last_name }}</td>
+                <td>{{ student.first_name }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <button type="submit" class="btn btn-primary">Save Attendance</button>
+</form>
+{% endblock %}

@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Session on {{ session.date_time.strftime('%Y-%m-%d %H:%M') }} to {{ session.end_time.strftime('%Y-%m-%d %H:%M') }} - Class: {{ session.class_.name }}</h2>
+<p>{{ session.description }}</p>
+<h3>Attendance</h3>
+<button id="copyButton" class="btn btn-secondary mb-2">Copy Names to Clipboard</button>
+<textarea id="namesList" class="form-control" rows="3" readonly style="display:none;"></textarea>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.getElementById('copyButton').addEventListener('click', function() {
+        var names = [
+            {% for attendance in session.attendances %}
+                {% if attendance.attended %}
+                    "{{ attendance.student.first_name }} {{ attendance.student.last_name }}",
+                {% endif %}
+            {% endfor %}
+        ];
+        var formattedNames = "";
+        if (names.length === 1) {
+            formattedNames = names[0];
+        } else if (names.length === 2) {
+            formattedNames = names.join(' and ');
+        } else if (names.length > 2) {
+            formattedNames = names.slice(0, -1).join(', ') + ', and ' + names[names.length - 1];
+        }
+        var namesList = document.getElementById('namesList');
+        namesList.value = formattedNames;
+        namesList.style.display = 'block';
+        namesList.select();
+        document.execCommand("copy");
+        namesList.style.display = 'none';
+        alert("Names copied to clipboard!");
+    });
+</script>
+{% endblock %}

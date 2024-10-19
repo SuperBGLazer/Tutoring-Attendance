@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Import Students into Class: {{ class_obj.name }}</h2>
+<form action="" method="post" enctype="multipart/form-data">
+    <div class="form-group">
+        <label for="file">CSV File:</label>
+        <input type="file" name="file" class="form-control" accept=".csv" required>
+        <small class="form-text text-muted">Format: Name (First Last or Last, First),Email. One per line.</small>
+    </div>
+    <button type="submit" class="btn btn-primary">Import</button>
+</form>
+{% endblock %}

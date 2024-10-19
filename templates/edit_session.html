@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Edit Session</h2>
+<form action="" method="post">
+    <div class="form-group">
+        <label for="date_time">Date and Time:</label>
+        <input type="datetime-local" name="date_time" class="form-control" value="{{ session.date_time.strftime('%Y-%m-%dT%H:%M') }}" required>
+    </div>
+    <div class="form-group">
+        <label for="description">Description (Optional):</label>
+        <textarea name="description" class="form-control">{{ session.description }}</textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Update Session</button>
+</form>
+{% endblock %}
