@@ -1,2 +1,5 @@
-flask
-flask_sqlalchemy
+Flask
+Flask_SQLAlchemy
+Flask_Migrate
+pymysql
+cryptography

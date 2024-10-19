@@ -1,16 +1,21 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy import and_
 import csv
 from io import StringIO
 from datetime import datetime
+from flask_migrate import Migrate
+import os
+
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'your_secret_key'  # Replace with a secure secret key
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///attendance.db'
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'your_secret_key')  # Replace with a secure secret key
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'mysql+pymysql://user:password@db/attendance_db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
+migrate = Migrate(app, db)
 
 # Association Table for Many-to-Many between Student and Class
 student_class = db.Table('student_class',
@@ -275,6 +280,22 @@ def list_sessions(class_id):
     class_obj = Class.query.get_or_404(class_id)
     sessions = Session.query.filter_by(class_id=class_id).order_by(Session.date_time.desc()).all()
     return render_template('list_sessions.html', sessions=sessions, class_obj=class_obj)
+
+@app.route('/sessions/<int:session_id>/edit', methods=['GET', 'POST'])
+def edit_session(session_id):
+    session_obj = Session.query.get_or_404(session_id)
+    if request.method == 'POST':
+        date_time_str = request.form['date_time']
+        end_time_str = request.form['end_time']
+        description = request.form['description']
+        session_obj.date_time = datetime.strptime(date_time_str, '%Y-%m-%dT%H:%M')
+        session_obj.end_time = datetime.strptime(end_time_str, '%Y-%m-%dT%H:%M')
+        session_obj.description = description
+        db.session.commit()
+        flash('Session updated successfully!', 'success')
+        return redirect(url_for('view_session', session_id=session_obj.id))
+    return render_template('edit_session.html', session=session_obj)
+
 
 if __name__ == '__main__':
     with app.app_context():
