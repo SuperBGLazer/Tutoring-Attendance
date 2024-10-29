@@ -51,9 +51,9 @@ Start the services and expose the Flask app on http://localhost:5000.
 Once the containers are up and running, apply the database migrations to create the necessary tables.
 
 ```bash
-docker-compose exec web flask db init
-docker-compose exec web flask db migrate -m "Initial migration"
-docker-compose exec web flask db upgrade
+docker compose exec web flask db init
+docker compose exec web flask db migrate -m "Initial migration"
+docker compose exec web flask db upgrade
 ```
 
 6. Access the Application
