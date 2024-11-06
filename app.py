@@ -237,9 +237,8 @@ def create_session(class_id):
     class_obj = Class.query.get_or_404(class_id)
     if request.method == 'POST':
         date_time_str = request.form['date_time']
-        description = request.form['description']
         date_time = datetime.strptime(date_time_str, '%Y-%m-%dT%H:%M')
-        session = Session(date_time=date_time, end_time=None, description=description, class_id=class_id)
+        session = Session(date_time=date_time, end_time=None, description=None, class_id=class_id)
         db.session.add(session)
         db.session.commit()
         # Create attendance records for all students in the class
@@ -259,6 +258,8 @@ def mark_attendance(session_id):
     class_obj = session_obj.class_
     if request.method == 'POST':
         end_time_str = request.form['end_time']
+        description = request.form['description']
+        session_obj.description = description
         session_obj.end_time = datetime.strptime(end_time_str, '%Y-%m-%dT%H:%M')
         attendance_ids = request.form.getlist('attendance')
         for attendance in session_obj.attendances:

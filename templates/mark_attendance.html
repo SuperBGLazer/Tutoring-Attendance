@@ -23,10 +23,14 @@
             {% endfor %}
         </tbody>
     </table>
-    <div class="form-group"></div>
+    <div class="form-group">
         <label for="end_time">End Date and Time:</label>
         <input type="datetime-local" name="end_time" class="form-control" required>
+        <br>
+        <label for="description">Description:</label>
+        <textarea name="description" class="form-control" required></textarea>
+        <br>
+        <button type="submit" class="btn btn-primary">Save Attendance</button>
     </div>
-    <button type="submit" class="btn btn-primary">Save Attendance</button>
 </form>
 {% endblock %}
