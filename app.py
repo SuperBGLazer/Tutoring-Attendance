@@ -297,6 +297,20 @@ def edit_session(session_id):
         return redirect(url_for('view_session', session_id=session_obj.id))
     return render_template('edit_session.html', session=session_obj)
 
+@app.route('/sessions/weekly-report', methods=['GET', 'POST'])
+def weekly_report():
+    
+    if request.method == 'GET':
+        return render_template('weekly_report.html')
+    elif request.method == 'POST':
+        start_date_str = request.form['start_date']
+        end_date_str = request.form['end_date']
+
+        start_date = datetime.strptime(start_date_str, '%Y-%m-%d')
+        end_date = datetime.strptime(end_date_str, '%Y-%m-%d')
+
+        sessions = Session.query.filter(and_(Session.date_time >= start_date, Session.date_time <= end_date)).all()
+        return render_template('weekly_report.html', sessions=sessions)
 
 if __name__ == '__main__':
     with app.app_context():
