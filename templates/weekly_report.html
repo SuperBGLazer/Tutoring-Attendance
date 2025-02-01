@@ -32,11 +32,13 @@
             {% for session in sessions %}
                 <tr>
                     <td>{{ session.date_time }}</td>
-                    <td>{{ session.class_name }}</td>
+                    <td>{{ session.class_.name }}</td>
                     <td>
                         <ul>
                             {% for student in session.attendances %}
-                                <li>{{ student.student.first_name }}</li>
+                                {% if student.attended %}
+                                    <li>{{ student.student.first_name }}</li>
+                                {% endif %}
                             {% endfor %}
                         </ul>
                     </td>

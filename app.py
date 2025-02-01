@@ -316,7 +316,7 @@ def weekly_report():
             Session.query
             .options(
                 joinedload(Session.attendances).joinedload(Attendance.student),
-                joinedload(Session.class_)  # This loads the associated class info
+                joinedload(Session.class_)
             )
             .filter(and_(Session.date_time >= start_date, Session.date_time <= end_date))
             .order_by(Session.date_time.desc())
