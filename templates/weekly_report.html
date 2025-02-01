@@ -37,7 +37,7 @@
                         <ul>
                             {% for student in session.attendances %}
                                 {% if student.attended %}
-                                    <li>{{ student.student.first_name }}</li>
+                                    <li>{{ student.student.first_name }} {{student.student.last_name}}</li>
                                 {% endif %}
                             {% endfor %}
                         </ul>
