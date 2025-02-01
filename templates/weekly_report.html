@@ -3,7 +3,7 @@
 
 <h1>Weekly Report</h1>
 
-<form action="" method="post">
+<form action="/sessions/weekly-report" method="post">
     <div class="form-group">
         <label for="start_date-date">Start Date:</label>
         <input type="date" name="start_date" class="form-control" required>
@@ -32,11 +32,11 @@
             {% for session in sessions %}
                 <tr>
                     <td>{{ session.date_time }}</td>
-                    <td>{{ session.class_obj.name }}</td>
+                    <td>{{ session.class_name }}</td>
                     <td>
                         <ul>
-                            {% for student in session.students %}
-                                <li>{{ student.name }}</li>
+                            {% for student in session.attendances %}
+                                <li>{{ student.student.first_name }}</li>
                             {% endfor %}
                         </ul>
                     </td>

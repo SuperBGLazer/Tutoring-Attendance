@@ -7,6 +7,7 @@ from io import StringIO
 from datetime import datetime
 from flask_migrate import Migrate
 import os
+from sqlalchemy.orm import joinedload
 
 
 app = Flask(__name__)
@@ -49,10 +50,10 @@ class Session(db.Model):
     date_time = db.Column(db.DateTime, nullable=False)
     end_time = db.Column(db.DateTime, nullable=True)  # Added end_time field
     description = db.Column(db.Text, nullable=True)
-    attendances = db.relationship('Attendance', backref='session', lazy=True)
+    attendances = db.relationship('Attendance', backref='session', lazy=False)
 
     def __repr__(self):
-        return f'Session on {self.date_time} - {self.end_time} for class {self.class_.name}'
+        return f'Session on {self.date_time} - {self.end_time}'
 
 
 class Attendance(db.Model):
@@ -61,7 +62,7 @@ class Attendance(db.Model):
     student_id = db.Column(db.Integer, db.ForeignKey('student.id', ondelete='CASCADE'), nullable=False)
     attended = db.Column(db.Boolean, default=False)
 
-    student = db.relationship('Student')
+    student = db.relationship('Student', lazy=False)
 
     def __repr__(self):
         return f'{self.student} attended {self.session}'
@@ -297,9 +298,10 @@ def edit_session(session_id):
         return redirect(url_for('view_session', session_id=session_obj.id))
     return render_template('edit_session.html', session=session_obj)
 
+
+
 @app.route('/sessions/weekly-report', methods=['GET', 'POST'])
 def weekly_report():
-    
     if request.method == 'GET':
         return render_template('weekly_report.html')
     elif request.method == 'POST':
@@ -309,8 +311,20 @@ def weekly_report():
         start_date = datetime.strptime(start_date_str, '%Y-%m-%d')
         end_date = datetime.strptime(end_date_str, '%Y-%m-%d')
 
-        sessions = Session.query.filter(and_(Session.date_time >= start_date, Session.date_time <= end_date)).all()
+        # Query sessions in the date range and eagerly load related attendance records, their students, and the class info.
+        sessions = (
+            Session.query
+            .options(
+                joinedload(Session.attendances).joinedload(Attendance.student),
+                joinedload(Session.class_)  # This loads the associated class info
+            )
+            .filter(and_(Session.date_time >= start_date, Session.date_time <= end_date))
+            .order_by(Session.date_time.desc())
+            .all()
+        )
+
         return render_template('weekly_report.html', sessions=sessions)
+
 
 if __name__ == '__main__':
     with app.app_context():
